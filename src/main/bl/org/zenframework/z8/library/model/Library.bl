@@ -1,0 +1,12 @@
+import org.zenframework.z8.base.table.Table;
+
+[entry]
+[generatable]
+[name "Library"]
+[displayName "Библиотека"]
+public class Library extends Table {
+	[displayName "Наименование"] name;
+		
+	
+	
+}

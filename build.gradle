@@ -10,7 +10,7 @@ buildscript {
 	repositories {
 		mavenLocal()
 		mavenCentral()
-		maven { url 'http://mvn.revoltsoft.ru/' }
+		maven { url 'http://mvn.zenframework.org/' }
 		maven { url 'https://plugins.gradle.org/m2/' }
 	}
 	dependencies {
@@ -20,7 +20,7 @@ buildscript {
 
 repositories {
 	mavenLocal()
-	maven { url 'http://mvn.revoltsoft.ru/' }
+	maven { url 'http://mvn.zenframework.org/' }
 }
 
 group = 'org.zenframework.z8'
@@ -74,7 +74,8 @@ ext.appHost = java.net.InetAddress.getLocalHost().getHostAddress()
 ext.appPort = 9080
 ext.appMaxFormContentSize = 15000000
 
-run {
+run {	
+	
 	dependsOn assembleWeb
 	jvmArgs = [
 		"-Xmx${appJavaXmx}",
@@ -82,6 +83,7 @@ run {
 		"-Dorg.eclipse.jetty.server.Request.maxFormContentSize=${appMaxFormContentSize}",
 		"-Dorg.mortbay.http.HttpRequest.maxFormContentSize=${appMaxFormContentSize}",
 		"-Djava.rmi.server.hostname=${appHost}",
+		"-Dfile.encoding=UTF-8",
 	]
 	args = ['-server', 'webserver']
 	workingDir = "${buildDir}/web/WEB-INF"
@@ -110,4 +112,7 @@ distributions {
 			}
 		}
 	}
+}
+tasks.named('minifyCss') {
+    enabled = false
 }
