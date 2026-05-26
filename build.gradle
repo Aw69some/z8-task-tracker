@@ -59,6 +59,15 @@ concatCss {
 	requiresInclude 'web/css/revolt.css'
 }
 
+task copyCss(type: Copy) {
+    from("${buildDir}/web/debug/css")
+    include("*.css")
+    into("${buildDir}/web/css")
+}
+
+assembleWeb.dependsOn copyCss
+copyCss.dependsOn concatCss
+
 concatJs {
 	requiresInclude 'web/revolt.js'
 }

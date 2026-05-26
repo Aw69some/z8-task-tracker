@@ -1,0 +1,8 @@
+import org.zenframework.z8.base.table.system.Users;
+
+
+[generatable]
+public class trackerUser extends Users {
+
+
+}

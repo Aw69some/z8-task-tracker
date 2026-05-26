@@ -1,0 +1,21 @@
+import org.zenframework.z8.base.table.Table;
+
+[generatable]
+[name "Status"]
+[displayName "Статус"]
+
+public class Status extends Table {
+
+	records {
+		
+		[name "Новая"]
+		New = '20DF1C42-53B7-4528-A4BC-4B64B740C3B5';
+
+		[name "В работе"]
+		InWork = 'B3191466-2541-4332-88FD-5CCDD686FEF5';
+
+		[name "Исполнена"]
+		Done = 'A977E3B9-661C-4B86-9C50-AB565685CF9B';
+	}
+
+}

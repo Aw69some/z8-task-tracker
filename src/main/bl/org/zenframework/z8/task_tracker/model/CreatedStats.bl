@@ -1,0 +1,30 @@
+import org.zenframework.z8.base.table.value.Aggregation;
+import org.zenframework.z8.base.table.value.IntExpression;
+import org.zenframework.z8.base.table.value.Join;
+import org.zenframework.z8.base.table.value.JoinType;
+import org.zenframework.z8.task_tracker.model.Exercise;
+import org.zenframework.z8.task_tracker.model.trackerUser;
+
+[generatable]
+public class CreatedStats extends trackerUser {
+
+	public Exercise exercise;
+
+	public Join exerciseJoin = class {
+		virtual protected sql_bool expression() {
+			return container.recordId == (sql_guid) container.exercise.creatorId;
+		}
+	};
+
+	exerciseJoin = exercise;
+	exerciseJoin.joinType = JoinType.Left;
+
+	[displayName "Создано задач"]
+	public IntExpression createdCount = exercise.recordId.sqlIsNull().IIF(0, 1);
+	createdCount.aggregation = Aggregation.Sum;
+
+	groupBy = {
+		name
+	};
+
+}

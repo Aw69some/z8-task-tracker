@@ -1,0 +1,193 @@
+import org.zenframework.z8.base.table.Table;
+import org.zenframework.z8.base.table.value.DateField;
+import org.zenframework.z8.base.table.value.DatetimeField;
+import org.zenframework.z8.base.table.value.Field;
+import org.zenframework.z8.base.table.value.IntField;
+import org.zenframework.z8.base.table.value.Link;
+import org.zenframework.z8.base.table.value.TextField;
+import org.zenframework.z8.task_tracker.model.ExHistory;
+import org.zenframework.z8.task_tracker.model.trackerUser;
+
+[generatable]
+[name "Exercise"]
+public class Exercise extends Table {
+	
+	public Project project;
+	[name "Project"] public Link projectId = project;
+	
+	[name "ID"]
+	public TextField id;
+	//id.defaultValue = getValue(); 
+	//подумать как инкремент делать - в видео ээто было
+	[name "Complexity"]
+	public IntField complexity;
+
+	[name "DueDate"]
+	public DateField dueDate;
+
+	[name "CompletedAt"]
+	public DatetimeField completedAt;
+
+
+	public trackerUser creator;
+	[name "Creator"]
+	public Link creatorId = creator;
+
+	public trackerUser executor;
+	[name "Executor"]
+	public Link executorId = executor;
+
+	public Status status;
+	[name "Status"] public Link statusId = status;
+	
+	public trackerUser user;
+	[name "User"] public Link userId = user;
+	
+	
+	
+	
+/*	virtual protected void afterUpdate(guid recordId) {
+		// Вызов метода из родительского класса
+		super.afterUpdate(recordId);
+
+		// Если не изменено значение ни поля statusId, ни userId, выйти из метода
+		//if (!statusId.isChanged() && !creatorId.isChanged() && !name.isChanged())
+		//	return;
+
+		// Если изменено значение поля statusId или userId, необходимо записать изменение в историю
+
+		// Создание экземпляра класса History для работы с таблицей
+		ExHistory exhistory;
+		// Установка ссылки на изменяемый документ
+		exhistory.exerciseId = recordId;
+		// Установка нового значения statusId
+		exhistory.statusId = statusId.get();
+		
+		exhistory.attribute = name.get();
+		// Установка нового значения userId
+		exhistory.userId = userId.get();
+		// Создание записи в таблице History с установленными значениями полей
+		exhistory.create();
+		
+		
+	}
+	
+	МОЖНО УДАЛИТЬ
+	*/
+	
+	virtual protected void beforeCreate(guid recordId) {
+	super.beforeCreate(recordId);
+	creatorId = user().id;	
+	} //создатель задачи присваевается полю при создании задачи
+
+
+	
+
+
+	
+	virtual protected void beforeDestroy(guid recordId) {
+		
+		super.beforeDestroy(recordId);
+		guid creator = creatorId.get();
+		guid executor = executorId.get();
+		
+		if (!readRecord(recordId, Field[] { this.creatorId }))
+			throw "Задача '" + recordId + "' не существует";
+	
+		if (this.creatorId.get() != user().id)
+			throw "Удалить задачу может только её создатель";
+		ExHistory exhistory;
+		exhistory.destroy(exhistory.exerciseId == recordId);
+		
+		
+		
+	}
+	
+	
+	virtual protected void beforeUpdate(guid recordId) {
+	
+		super.beforeUpdate(recordId);
+	//	if (!readRecord(recordId, Field[] { this.creatorId, this.executorId }))
+	//		throw "Задача '" + recordId + "' не существует";
+		
+	//	guid creatorId = this.creatorId.get();
+		
+	//	if (this.creatorId.get() != user().id && this.executorId.get() != user().id)
+			//throw "Редактировать задачу может только создатель или исполнитель";
+	//		throw ("creatorId = " + this.creatorId.get().toString() + " | currentUser = " + user().id.toString());
+		
+	//	if (creatorId.get() != user().id && executorId.get() != user().id)
+	//	throw ("creatorId = " + creatorId.get().toString() + " | currentUser = " + user().id.toString());
+		if (!readRecord(recordId, Field[] { this.creatorId, this.executorId }))
+			throw "Задача '" + recordId + "' не существует";
+	
+		if (this.creatorId.get() != user().id && this.executorId.get() != user().id)
+			throw "Редактировать задачу может только создатель или исполнитель";
+	
+		
+		if (!statusId.isChanged())
+			return;
+	
+		if (statusId.get() == Status.Done)
+			completedAt = date.now();
+		else
+			completedAt = date.Min;
+	}
+	
+	
+	virtual protected void afterUpdate(guid recordId) {
+
+	super.afterUpdate(recordId);
+	
+	
+	
+
+	if (project.name.isChanged()) {
+		writeHistory(recordId,"Проект", project.name.get().toString());
+	}
+	if (name.isChanged()) {
+		writeHistory(recordId,"Наименование", name.get().toString());
+	}
+	if (complexity.isChanged()) {
+		writeHistory(recordId,"Трудоемкость", complexity.get().toString());
+	}
+	if (dueDate.isChanged()) {
+		writeHistory(recordId,"Срок выполнения", dueDate.get()); 		// пофиксить передачу времени ибо криво
+	}
+	//if (name.isChanged()) {
+	//	writeHistory(recordId, name.get().toString());
+	//}
+	if (statusId.isChanged()) {
+		
+		writeHistory(recordId, "Статус", status.name.get().toString());
+	}
+
+	if (description.isChanged()) {
+		writeHistory(recordId, "Описание", description.get().toString());	//хз не подумал пока
+	}
+
+	
+	
+	
+}
+	
+	
+	public void writeHistory(guid recordId, string attr, string value) {
+
+	ExHistory exhistory;
+
+	exhistory.exerciseId = recordId;
+	exhistory.changedField = attr;
+	exhistory.value = value;
+	exhistory.userId = user().id;
+
+	exhistory.create();
+}
+
+
+
+
+
+
+	
+}

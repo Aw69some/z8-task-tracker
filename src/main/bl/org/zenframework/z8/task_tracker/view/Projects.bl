@@ -1,0 +1,65 @@
+import org.zenframework.z8.base.form.Listbox;
+import org.zenframework.z8.task_tracker.model.Project;
+import org.zenframework.z8.task_tracker.model.ProjectAccess;
+
+
+[entry]
+[request true]
+[displayName "Проекты"]
+public class Projects extends Project {
+	
+	[displayName "Проект"] name;
+	
+	[displayName "Код"] code;
+	
+	
+	public Exercises exercise;
+	exercise.name.editable = true;
+	exercise.complexity.editable = true;
+	exercise.dueDate.editable = true;
+	exercise.completedAt.editable = false;
+	exercise.description.editable = true;
+//	exercise.creatorId
+	exercise.executorId.editable = true;
+	exercise.status.name.editable = true;
+
+	exercise.name.source = exercise;
+	
+	[displayName "Журнал задач"]
+	public Listbox exerciselList;
+	exerciselList.query = exercise;
+	exerciselList.link = exercise.projectId;
+	exerciselList.columns = { 
+		exercise.name, 
+		exercise.project.name,
+		exercise.complexity,
+		exercise.dueDate,
+		exercise.completedAt,
+		exercise.creatorId,
+		exercise.executorId,
+		exercise.description,
+		exercise.status.name, 
+	};
+	
+
+	
+	exerciselList.colSpan = 4;
+	exerciselList.flex = 3;
+	//colCount = 4;
+	
+	public ProjectAccess projectAccess;
+
+	[displayName "Пользователи проекта"]
+	private Listbox projectAccessList;
+
+	projectAccessList.query = projectAccess;
+	projectAccessList.link = projectAccess.projectId;
+	projectAccessList.columns = { projectAccess.user.name};
+
+	
+	names = { name, code };
+
+	controls = {name, code, projectAccessList, exerciselList};
+
+	columns = {name, code};
+}

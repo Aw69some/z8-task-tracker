@@ -1,0 +1,22 @@
+import org.zenframework.z8.base.table.Table;
+
+[generatable]
+[name "Author"]
+[displayName "Авторы"]
+public class Author extends Table {
+
+	records {
+		[name "Толстой Лев Николаевич"]
+		Tolstoy = 'AE2F5BDA-2542-4122-880E-4E8DC6349739';
+		
+		[name "Тургенев Иван Сергеевич"]
+		Turgenev = 'D09F6700-3396-424F-8B41-89B37F8CF095';
+		
+		[name "Лондон Джек"]
+		London = '74F9C921-3303-4DE4-84E2-75236779C9F1';
+		
+		[name "Достоевский Фёдор Михайлович"]
+		Dostoevsky = '7A7B728A-B462-4CA7-B4DB-191252CFB828';
+	}
+
+}

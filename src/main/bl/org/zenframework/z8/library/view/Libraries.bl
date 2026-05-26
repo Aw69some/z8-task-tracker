@@ -1,0 +1,10 @@
+import org.zenframework.z8.library.model.Library;
+
+[displayName "Библиотека"]
+public class Libraries extends Library {
+
+	names = { name };
+	controls = { name, address, phone };
+	columns = { name, address, phone };
+
+}

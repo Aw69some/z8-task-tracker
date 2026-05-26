@@ -1,9 +1,12 @@
 import org.zenframework.z8.base.table.Table;
+import org.zenframework.z8.base.table.value.StringExpression;
 import org.zenframework.z8.base.table.value.StringField;
 
+[entry]
 [generatable]
-[name "Library"]
-public class Library extends Table {
+[name "Person"]
+[displayName "Посетители"]
+public class Person extends Table {
 
 	[displayName "Наименование"] name;
 
@@ -16,5 +19,7 @@ public class Library extends Table {
 	[displayName "Телефон"]
 	public StringField phone;
 	phone.length = 30;
+
+	public StringExpression namePhone = name + " (" + phone + ")";
 
 }

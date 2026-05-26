@@ -1,0 +1,18 @@
+import org.zenframework.z8.base.table.Table;
+import org.zenframework.z8.base.table.value.Link;
+import org.zenframework.z8.task_tracker.model.Project;
+import org.zenframework.z8.task_tracker.model.trackerUser;
+
+[generatable]
+[name "ProjectAccess"]
+public class ProjectAccess extends Table {
+
+	public Project project;
+	[name "Project"]
+	public Link projectId = project;
+
+	public trackerUser user;
+	[name "User"]
+	public Link userId = user;
+
+}

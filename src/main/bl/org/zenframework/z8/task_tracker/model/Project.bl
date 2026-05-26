@@ -1,0 +1,17 @@
+import org.zenframework.z8.base.table.Table;
+import org.zenframework.z8.base.table.value.StringField;
+
+
+[generatable]
+[name "Project"]
+public class Project extends Table {
+	
+
+	[name "Code"]
+	public StringField code;
+	code.length = 20;
+	
+	
+	
+
+}

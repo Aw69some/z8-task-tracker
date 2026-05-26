@@ -19,9 +19,9 @@ Application.listbox.collapsed = false;
 //Application.listbox.checks = false;
 
 // Имя приложения
-Application.name = 'Z8 Template';
+Application.name = 'Task Tracker';
 // Заголовок приложения
-Application.title = 'Z8 Template';
+Application.title = 'Task Tracker';
 
 // Начальная форма - в качестве значения может принимать строку с именем BL-класса формы стартовой страницы,
 // либо функцию, возвращающую строку с именем BL-класса формы стартовой страницы

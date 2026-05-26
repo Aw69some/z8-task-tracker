@@ -1,0 +1,123 @@
+import org.zenframework.z8.base.table.RecordLock;
+import org.zenframework.z8.base.table.Table;
+import org.zenframework.z8.base.table.value.DateExpression;
+import org.zenframework.z8.base.table.value.DatetimeField;
+import org.zenframework.z8.base.table.value.Field;
+import org.zenframework.z8.base.table.value.IntExpression;
+import org.zenframework.z8.base.table.value.Link;
+import org.zenframework.z8.base.table.value.StringExpression;
+
+[generatable]
+[name "Journal"]
+public class Journal extends Table {
+
+	public static final int Returned = 0;
+	public static final int Booked = 1;
+	public static final int Lended = 2;
+
+	public Book book;
+	[name "Book"] public Link bookId = book;
+
+	public Person person;
+	[name "Person"] public Link personId = person;
+
+	[name "Booked"]
+	[displayName "Забронировал"]
+	public DatetimeField bookedAt;
+	bookedAt.defaultValue = date.now();
+
+	[name "Date"]
+	[displayName "Взял"]
+	public DatetimeField lendedAt;
+
+	[name "Returned"]
+	[displayName "Вернул"]
+	public DatetimeField returnedAt;
+
+	/*
+	 * DateExpression - выражение типа date, вычисляемое в СУБД. DateExpression в момент исполнения генерирует SQL-выражение,
+	 * которое добавляется в запрос к БД. См. также status, statusStr, Book.fullName
+	 */
+
+	[displayName "Вернуть"]
+	public DateExpression alertAt = ((sql_date) lendedAt == date.Min).IIF(date.Min, ((sql_date) lendedAt).addDay(14));
+
+	public IntExpression status = (bookedAt == date.Min || returnedAt != date.Min).IIF(
+			Returned, (lendedAt == date.Min).IIF(Booked, Lended));
+
+	[displayName "Статус"]
+	public StringExpression statusStr = (status == Returned).IIF("Возвращена", (status == Booked).IIF("Забронирована", "На руках"));
+
+	/*
+	 * Бизнес-логика описывается в императивном стиле в виде последовательности действий (алгоритма).
+	 * В текущем примере реализуется следующая статусная модель (статус вычисляется из данных записи журнала).
+	 * 1. "Книга забронирована" - запись журнала создана: поле bookedAt заполнено, поля lendedAt и returnedAt - нет.
+	 * 2. "Книга выдана" - поля bookedAt и lendedAt заполнены, поле returnedAt - нет.
+	 * 3. "Книга возвращена" - все поля-даты заполнены.
+	 * Переходы между статусами описываются отдельными методами.
+	 */
+
+	/*
+	 * Метод void lendBook(guid recordId) - переводит запись из статуса "Забронирована" в статус "Выдана".
+	 * recordId - идентификатор записи в журнале
+	 */
+	public void lendBook(guid recordId) {
+		// Проверяем, существует ли запись и вычитываем bookId
+		if (!readRecord(recordId, Field[] { this.bookId, this.status }))
+			throw "Запись '" + recordId + "' не существует";
+		
+		// Проверяем статус
+		if (this.status.get() != Booked)
+			throw "Неверный статус";
+
+		// Получаем значение bookId
+		guid bookId = this.bookId.get();
+
+		// Ищем запись, отличную от record, такую, что this.bookId == bookId и статус != "Возвращена"
+		// Если такая запись есть - ошибка
+		if (readFirst(Field[] { book.fullName, person.name, status }, this.bookId == bookId && this.status != Returned && this.recordId != recordId))
+			throw "Книга " + book.fullName.get()
+					+ (status.get() == Booked ? " забронирована читателем " : " находится на руках у читателя ")
+					+ person.name.get();
+
+		// Проставляем дату lendedAt (меняем статус), блокируем и обновляем запись
+		this.lendedAt = date.now();
+		this.lock = RecordLock.Full;
+		update(recordId);
+	}
+
+	/*
+	 * Метод void returnBook(guid recordId) - переводит запись из статуса "Выдана" в статус "Возвращена".
+	 * recordId - идентификатор записи в журнале
+	 */
+	public void returnBook(guid recordId) {
+		// Проверяем, существует ли запись и вычитываем status
+		if (!readRecord(recordId, Field[] { this.status }))
+			throw "Запись '" + recordId + "' не существует";
+
+		// Проверяем статус
+		if (this.status.get() != Lended)
+			throw "Неверный статус";
+
+		// Проставляем дату returnedAt (меняем статус), обновляем запись
+		this.returnedAt = date.now();
+		update(recordId);
+	}
+
+	/*
+	 * Метод void beforeCreate(guid recordId) вызывается системой непосредственно перед созданием записи
+	 * (см. Query.beforeCreate() и прочие методы-обработчики событий, а также Books.onDestroyAction()).
+	 * recordId - идентификатор создаваемой записи
+	 */
+	virtual protected void beforeCreate(guid recordId) {
+		super.beforeCreate(recordId);
+
+		// Ищем запись такую, что this.bookId == bookId и статус != "Возвращена"
+		// Если такая запись есть - ошибка
+		if (readFirst(Field[] { book.fullName, person.name, status }, this.bookId == this.bookId.get() && this.status != Returned))
+			throw "Книга " + book.fullName.get()
+					+ (status.get() == Booked ? " забронирована читателем " : " находится на руках у читателя ")
+					+ person.name.get();
+	}
+
+}

@@ -1,6 +1,5 @@
 import org.zenframework.z8.base.table.system.Roles;
-import org.zenframework.z8.base.table.system.Users;
-import org.zenframework.z8.template.runtime.Setup;
+import org.zenframework.z8.task_tracker.runtime.Setup;
 
 /*
  * Объект класса SchemaGenerator создаётся при запуске процедуры генерации схемы данных.
@@ -27,16 +26,16 @@ public class SchemaGenerator extends org.zenframework.z8.base.table.SchemaGenera
 		// Запретить роли User доступ к приватным таблицам
 		setup.setTableAccess(setup.privateTables, guid[] { Roles.User }, false, false, false, false, false);
 		// Разрешить роли User доступ к публичным таблицам
-		setup.setTableAccess(setup.publicTables, guid[] { Roles.Administrator, Roles.User }, true, true, true, true, true);
+//		setup.setTableAccess(setup.publicTables, guid[] { Roles.Administrator, Roles.User }, true, true, true, true, true);
 
 		// Запретить роли User доступ к приватным запросам
-		setup.setRequestAccess(setup.privateRequests, guid[] { Roles.User }, false);
+//		setup.setRequestAccess(setup.privateRequests, guid[] { Roles.User }, false);
 		// Разрешить роли User доступ к публичным запросам
-		setup.setRequestAccess(setup.publicRequests, guid[] { Roles.User }, true);
+//		setup.setRequestAccess(setup.publicRequests, guid[] { Roles.User }, true);
 
 		// Добаить пользователю Administrator все пункты меню
-		setup.addEntries(setup.privateEntries, Users.Administrator);
-		setup.addEntries(setup.publicEntries, Users.Administrator);
+//		setup.addEntries(setup.privateEntries, Users.Administrator);
+//		setup.addEntries(setup.publicEntries, Users.Administrator);
 	}
 
 }
