@@ -4,6 +4,7 @@ import org.zenframework.z8.base.table.value.FileField;
 import org.zenframework.z8.base.table.value.Link;
 import org.zenframework.z8.base.table.value.StringExpression;
 import org.zenframework.z8.base.table.value.StringField;
+import org.zenframework.z8.base.table.value.TextField;
 
 /*
  * Атрибут [generatable] указывает Z8, что таблица, которую описывает класс,
@@ -16,7 +17,18 @@ import org.zenframework.z8.base.table.value.StringField;
 
 /* Класс Document описывает таблицу в БД для хранения документов */
 public class Document extends Table {
-
+	
+	
+	[name "Xml"]
+	[displayName "XML"]
+	public TextField xml;
+	
+	[name "Youtube"]
+	[displayName "YouTube"]
+	public StringField youtube;
+	youtube.length = 255;
+	
+	
 	/* Таблица, на которую ссылается поле statusId по Foreign Key */
 	public Status status;
 	/* Ссылка на таблицу Status по Foreign Key, атрибут [name] определяет имя поля statusId в БД */
@@ -36,7 +48,18 @@ public class Document extends Table {
 	[displayName "Файл"]
 	/* FileField - тип поля для хранения одного файла */
 	public FileField doc;
-
+	
+	//[name "AudioPath"]
+	//[displayName "Аудио"]
+	//public StringField audioPath;
+	//audioPath.length = 500;
+	
+	[name "AudioPreview"]
+	[displayName "Аудиоплеер"]
+	public StringField audioPreview;
+	
+	
+	
 	[name "Email"]
 	[displayName "E-Mail"]
 	/* StringField - поле для хранения строковой информации ограниченной длины */

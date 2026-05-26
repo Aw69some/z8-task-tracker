@@ -1,6 +1,7 @@
 import org.zenframework.z8.base.form.Listbox;
 import org.zenframework.z8.base.form.action.Action;
 import org.zenframework.z8.base.query.Query;
+import org.zenframework.z8.base.table.value.StringField;
 import org.zenframework.z8.template.model.Document;
 import org.zenframework.z8.template.model.History;
 
@@ -84,11 +85,21 @@ public class Documents extends Document {
 	 * ( см. src/main/js/ui/control/EMail.js )
 	 */
 	[ui "org.zenframework.z8.template.controls.EMail"] email;
+	[ui "org.zenframework.z8.template.controls.XmlTextArea"] xml;
+	xml.colSpan = 4;
+	xml.flex = 1;
+	[ui "org.zenframework.z8.template.controls.YouTubeText"] youtube;
+	youtube.colSpan = 4;
+	//[ui "org.zenframework.z8.template.controls.AudioFile"] audioPath;
+	
+
+	[ui "org.zenframework.z8.template.controls.AudioFile"] audioPreview;
+	
 
 	/* Массив names определяет перечень полей, отображаемых в левом списке в режиме формы */
 	names = { createdAt, fullName };
 	/* Массив controls определяет перечень визуальных элементов, отображаемых в правой части формы */
-	controls = { createdAt, name, doc, status.name, user.name, email, historyList };
+	controls = { createdAt, name, doc, status.name, user.name, email, audioPreview, xml, youtube, historyList };
 	/* Массив columns определяет перечень полей, отображаемых в режиме таблицы */
 	columns = { createdAt, name, doc, status.name, user.name };
 

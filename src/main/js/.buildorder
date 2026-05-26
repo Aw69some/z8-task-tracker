@@ -1,5 +1,9 @@
 application/Application.js
 application/User.js
 application/Viewport.js
-
+js/lib/codemirror/codemirror.js
+js/lib/codemirror/mode/xml/xml.js
 ui/control/EMail.js
+ui/control/XmlTextArea.js
+ui/control/YouTubeText.js
+ui/control/AudioFile.js
