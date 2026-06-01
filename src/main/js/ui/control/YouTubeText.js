@@ -8,7 +8,7 @@ Z8.define('org.zenframework.z8.template.controls.YouTubeText', {
 
 		this.player = document.createElement('iframe');
 		this.player.width = '100%';
-		this.player.height = '240';
+		this.player.height = '860';
 		this.player.style.marginTop = '8px';
 		this.player.style.border = '0';
 		this.player.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';

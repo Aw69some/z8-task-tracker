@@ -4,38 +4,28 @@ import org.zenframework.z8.base.table.value.StringField;
 
 [generatable]
 [name "ExHistory"]
-
 public class ExHistory extends Table {
-
 
 	public Exercise exercise;
 	[name "Exercise"] public Link exerciseId = exercise;
 	
 	[name "Attribute"]
-	public StringField value;
-	
-	value.length = 100;
+	public StringField changedField;
+	changedField.length = 20;
 	
 	[name "NewValue"]
-	public StringField changedField;
+	public StringField value;
+	value.length = 20;
 	
-	changedField.length = 100;
-	
-	
-
 	public Status status;
 	[name "Status"] public Link statusId = status;
 
 	public trackerUser user;
 	[name "User"] public Link userId = user;
 
-	/* Атрибут [displayName] определяет имя, с которым поле createdAt отображается в UI */
 	[displayName "Дата"] createdAt;
 	[displayName "Изменненный атрибут"] changedField;
 	[displayName "Новое значение"] value;
 	[displayName "Автор изменения"] user.name;
-	
-	//[displayName "Предыдущее значение"] //user.name;
-	//[displayName "Новое значение"]
 
 }

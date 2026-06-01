@@ -1,7 +1,6 @@
 import org.zenframework.z8.base.form.Listbox;
 import org.zenframework.z8.base.form.action.Action;
 import org.zenframework.z8.base.query.Query;
-import org.zenframework.z8.base.table.value.StringField;
 import org.zenframework.z8.template.model.Document;
 import org.zenframework.z8.template.model.History;
 
@@ -86,13 +85,11 @@ public class Documents extends Document {
 	 */
 	[ui "org.zenframework.z8.template.controls.EMail"] email;
 	[ui "org.zenframework.z8.template.controls.XmlTextArea"] xml;
-	xml.colSpan = 4;
+	xml.colSpan = 2;
 	xml.flex = 1;
 	[ui "org.zenframework.z8.template.controls.YouTubeText"] youtube;
-	youtube.colSpan = 4;
-	//[ui "org.zenframework.z8.template.controls.AudioFile"] audioPath;
-	
-
+	youtube.colSpan = 2;
+	youtube.flex = 1;
 	[ui "org.zenframework.z8.template.controls.AudioFile"] audioPreview;
 	
 

@@ -4,35 +4,9 @@ import org.zenframework.z8.task_tracker.model.trackerUser;
 [request true]
 [displayName "Пользователи"]
 public class trackerUsers extends trackerUser {
+	
 	names = { name };
+	controls = { name, firstName, lastName };
+	columns = { name, firstName, lastName };
 	
-
-	
-
-/*	controls = {
-		name,
-		password,
-		firstName,
-		lastName,
-		middleName,
-		phone,
-		email,
-		position,
-		banned,
-		
-		
-	};
-
-	columns = {
-		name,
-		lastName,
-		firstName,
-		email,
-		position, 
-		
-	};
-	
-	
-*/
-
 }

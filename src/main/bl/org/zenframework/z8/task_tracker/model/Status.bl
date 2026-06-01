@@ -3,7 +3,6 @@ import org.zenframework.z8.base.table.Table;
 [generatable]
 [name "Status"]
 [displayName "Статус"]
-
 public class Status extends Table {
 
 	records {
@@ -17,5 +16,5 @@ public class Status extends Table {
 		[name "Исполнена"]
 		Done = 'A977E3B9-661C-4B86-9C50-AB565685CF9B';
 	}
-
+	
 }

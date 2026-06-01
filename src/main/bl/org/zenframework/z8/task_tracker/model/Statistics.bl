@@ -1,0 +1,59 @@
+import org.zenframework.z8.base.table.value.Aggregation;
+import org.zenframework.z8.base.table.value.DecimalExpression;
+import org.zenframework.z8.base.table.value.IntExpression;
+import org.zenframework.z8.base.table.value.Join;
+import org.zenframework.z8.base.table.value.JoinType;
+import org.zenframework.z8.task_tracker.model.Exercise;
+import org.zenframework.z8.task_tracker.model.Status;
+import org.zenframework.z8.task_tracker.model.trackerUser;
+
+[generatable]
+public class Statistics extends trackerUser {
+
+	public Exercise exercise;
+	
+	public Join exerciseJoin = class {
+		virtual protected sql_bool expression() {
+			return container.recordId == (sql_guid) container.exercise.creatorId 
+				|| container.recordId == (sql_guid) container.exercise.executorId;
+		}
+	};
+	exerciseJoin = exercise;
+	exerciseJoin.joinType = JoinType.Left;
+
+	//Создано задач
+	public IntExpression createdCount = ((sql_guid) exercise.creatorId == (sql_guid) recordId).IIF(1, 0);
+	createdCount.aggregation = Aggregation.Sum;
+
+	//Выполнено задач
+	public IntExpression completedCount =
+		(
+			(sql_guid) exercise.executorId == (sql_guid) recordId 
+			&& (sql_guid) exercise.statusId == (sql_guid) Status.Done
+		 ).IIF(1, 0);
+	completedCount.aggregation = Aggregation.Sum;
+
+	//Выполнено в срок
+	public IntExpression completedInTimeCount =
+		(
+			(sql_guid) exercise.executorId == (sql_guid) recordId
+			&& (sql_guid) exercise.statusId == (sql_guid) Status.Done
+			&& exercise.completedAt <= ((sql_date) exercise.dueDate).addDay(1)
+		).IIF(1, 0);
+	completedInTimeCount.aggregation = Aggregation.Sum;
+	
+	//% в срок
+	public DecimalExpression completedInTimePercent =
+	((sql_int) completedCount == 0).IIF(
+		0.0,
+		(
+			((sql_decimal) (sql_int) completedInTimeCount)
+			/
+			((sql_decimal) (sql_int) completedCount)
+		) * 100.0
+	);
+	completedInTimePercent.aggregation = Aggregation.None;
+
+	groupBy = {	name };
+	
+}

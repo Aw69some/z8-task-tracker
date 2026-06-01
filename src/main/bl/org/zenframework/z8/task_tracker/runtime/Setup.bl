@@ -1,3 +1,4 @@
+import org.zenframework.z8.task_tracker.view.StatisticsView;
 import org.zenframework.z8.base.application.Application;
 import org.zenframework.z8.base.table.Sql;
 import org.zenframework.z8.base.table.Table;
@@ -9,11 +10,9 @@ import org.zenframework.z8.base.table.system.UserEntries;
 import org.zenframework.z8.base.table.system.UserRoles;
 import org.zenframework.z8.base.table.value.Field;
 import org.zenframework.z8.lang.Object;
-//import org.zenframework.z8.template.model.Document;
-//import org.zenframework.z8.template.model.History;
-//import org.zenframework.z8.template.model.Status;
-//import org.zenframework.z8.template.view.Documents;
-//import org.zenframework.z8.template.view.MyDocuments;
+import org.zenframework.z8.task_tracker.view.Projects;
+import org.zenframework.z8.task_tracker.view.Exercises;
+import org.zenframework.z8.task_tracker.view.MyExercises;
 
 /* Класс-помощник для настройки приложения */
 public class Setup {
@@ -35,6 +34,19 @@ public class Setup {
 
 	/* Системная таблица Z8, хранящая пункты меню приложения */
 	private Entries entries;
+	
+	private Projects projects;
+	private Exercises exercises;
+	private MyExercises myExercises;
+	private StatisticsView statistics;
+	
+	//Необходимые компоненты для User
+	public final int[Object] publicEntries = {
+	(projects, 1),
+	(exercises, 2),
+	(myExercises, 3),
+	(statistics, 4)
+	};
 
 	/* Таблица приложения для хранения документов */
 	//private Document document;

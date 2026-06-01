@@ -1,4 +1,8 @@
 import org.zenframework.z8.base.table.Table;
+import org.zenframework.z8.base.table.system.Roles;
+import org.zenframework.z8.base.table.system.UserRoles;
+import org.zenframework.z8.base.table.system.Users;
+import org.zenframework.z8.base.table.value.Field;
 import org.zenframework.z8.base.table.value.Link;
 import org.zenframework.z8.task_tracker.model.Project;
 import org.zenframework.z8.task_tracker.model.trackerUser;
@@ -14,5 +18,61 @@ public class ProjectAccess extends Table {
 	public trackerUser user;
 	[name "User"]
 	public Link userId = user;
+	
+	//При удалении пользователя из проекта, если пользователь был исполнителем - пустота, если создателем - переназначение на Admin
+	//Соответственно корректируется история задачи
+	virtual protected void beforeDestroy(guid recordId) {
+		super.beforeDestroy(recordId);
+		if (!readRecord(recordId, Field[] { projectId, userId }))
+			throw "Запись доступа не найдена";
+	
+		guid project = projectId.get();
+		guid removedUser = userId.get();
+	
+		Exercise exercise;
+		ExHistory history;
+		
+		// Находим все задачи проекта, где пользователь является создателем или исполнителем
+		exercise.read(
+			Field[] { exercise.recordId, exercise.creatorId, exercise.executorId, exercise.projectId },
+			(sql_guid) exercise.projectId == (sql_guid) project
+			&& ((sql_guid) exercise.creatorId == (sql_guid) removedUser
+				|| (sql_guid) exercise.executorId == (sql_guid) removedUser)
+			);
+		
+		// Для найденных задач: заменяем автора записей истории на Admin
+		while (exercise.next()) {
+			guid exerciseId = exercise.recordId();
+	
+			history.userId = Users.Administrator;
+			history.update((sql_guid) history.exerciseId == (sql_guid) exerciseId
+				&& (sql_guid) history.userId == (sql_guid) removedUser);
+		}
+		
+		// Если пользователь был создателем задачи, заменяем создателя на Admin
+		exercise.creatorId = Users.Administrator;
+		exercise.update((sql_guid) exercise.projectId == (sql_guid) project
+			&& (sql_guid) exercise.creatorId == (sql_guid) removedUser
+		);
+		
+		// Если пользователь был исполнителем задачи, очищаем исполнителя
+		exercise.executorId = guid.Null;
+		exercise.update((sql_guid) exercise.projectId == (sql_guid) project
+			&& (sql_guid) exercise.executorId == (sql_guid) removedUser
+		);
+	
+		
+	}
+	
+	
+	//Добавлять в проекты пользователей может только админ
+	virtual protected void beforeCreate(guid recordId) {
+		super.beforeCreate(recordId);
+	
+		UserRoles userRoles;
+	
+		if (!userRoles.hasRecord(userRoles.user == user().id && userRoles.role == Roles.Administrator))
+			throw "Добавлять пользователей в проект может только администратор";
+	}
 
 }

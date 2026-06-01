@@ -1,7 +1,7 @@
 import org.zenframework.z8.base.form.Listbox;
+import org.zenframework.z8.base.form.Section;
 import org.zenframework.z8.task_tracker.model.Project;
 import org.zenframework.z8.task_tracker.model.ProjectAccess;
-
 
 [entry]
 [request true]
@@ -12,16 +12,7 @@ public class Projects extends Project {
 	
 	[displayName "Код"] code;
 	
-	
 	public Exercises exercise;
-	exercise.name.editable = true;
-	exercise.complexity.editable = true;
-	exercise.dueDate.editable = true;
-	exercise.completedAt.editable = false;
-	exercise.description.editable = true;
-//	exercise.creatorId
-	exercise.executorId.editable = true;
-	exercise.status.name.editable = true;
 
 	exercise.name.source = exercise;
 	
@@ -35,17 +26,12 @@ public class Projects extends Project {
 		exercise.complexity,
 		exercise.dueDate,
 		exercise.completedAt,
-		exercise.creatorId,
-		exercise.executorId,
-		exercise.description,
+		exercise.creator.name,
+		exercise.executor.name,
 		exercise.status.name, 
-	};
-	
-
-	
-	exerciselList.colSpan = 4;
-	exerciselList.flex = 3;
-	//colCount = 4;
+	};	
+	exerciselList.colSpan = 3;
+	exerciselList.flex = 1;
 	
 	public ProjectAccess projectAccess;
 
@@ -55,11 +41,16 @@ public class Projects extends Project {
 	projectAccessList.query = projectAccess;
 	projectAccessList.link = projectAccess.projectId;
 	projectAccessList.columns = { projectAccess.user.name};
+	projectAccessList.flex = 1;
+	
+	public Section section;
+	section.controls = { name, code, projectAccessList };
+	section.colCount = 1;
+	section.colSpan = 1;
 
 	
 	names = { name, code };
-
-	controls = {name, code, projectAccessList, exerciselList};
-
+	controls = {section, exerciselList};
 	columns = {name, code};
+	
 }

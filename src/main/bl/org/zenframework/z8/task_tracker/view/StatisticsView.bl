@@ -1,0 +1,35 @@
+import org.zenframework.z8.task_tracker.model.Statistics;
+
+[entry]
+[request true]
+[displayName "Статистика"]
+[presentation "table"]
+public class StatisticsView extends Statistics {
+
+	[displayName "Создано задач"] createdCount;
+	
+	[displayName "Выполнено задач"] completedCount;
+	
+	[displayName "В срок"] completedInTimeCount;
+	
+	[displayName "% в срок"] completedInTimePercent;
+
+	controls = {
+		name,
+		firstName,
+		lastName,
+		createdCount,
+		completedCount,
+		completedInTimeCount, completedInTimePercent
+	};
+
+	columns = {
+		name,
+		firstName,
+		lastName,
+		createdCount,
+		completedCount,
+		completedInTimeCount, completedInTimePercent
+	};
+
+}

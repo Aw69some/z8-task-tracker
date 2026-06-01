@@ -49,16 +49,11 @@ public class Document extends Table {
 	/* FileField - тип поля для хранения одного файла */
 	public FileField doc;
 	
-	//[name "AudioPath"]
-	//[displayName "Аудио"]
-	//public StringField audioPath;
-	//audioPath.length = 500;
-	
 	[name "AudioPreview"]
-	[displayName "Аудиоплеер"]
+	[displayName "Предпросмотр аудио"]
 	public StringField audioPreview;
-	
-	
+	audioPreview.length = 1;
+
 	
 	[name "Email"]
 	[displayName "E-Mail"]

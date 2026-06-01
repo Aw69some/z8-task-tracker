@@ -33,9 +33,12 @@ public class SchemaGenerator extends org.zenframework.z8.base.table.SchemaGenera
 		// Разрешить роли User доступ к публичным запросам
 //		setup.setRequestAccess(setup.publicRequests, guid[] { Roles.User }, true);
 
-		// Добаить пользователю Administrator все пункты меню
+//		 Добаить пользователю Administrator все пункты меню
 //		setup.addEntries(setup.privateEntries, Users.Administrator);
 //		setup.addEntries(setup.publicEntries, Users.Administrator);
+
+
+		
 	}
 
 }

@@ -1,8 +1,54 @@
+import org.zenframework.z8.base.table.system.Roles;
+import org.zenframework.z8.base.table.system.UserEntries;
+import org.zenframework.z8.base.table.system.UserRoles;
 import org.zenframework.z8.base.table.system.Users;
+import org.zenframework.z8.task_tracker.runtime.Setup;
+import org.zenframework.z8.task_tracker.model.ProjectAccess;
 
 
 [generatable]
 public class trackerUser extends Users {
 
+	// При создании нового пользователя устанавливаем смену пароля при входе в систему
+	virtual protected void beforeCreate(guid recordId) {
+		super.beforeCreate(recordId);
+
+		changePassword = true;
+	}
+
+	// Добавляем новому пользователю роль User и необходимые компоненты
+	virtual protected void afterCreate(guid recordId) {
+		super.afterCreate(recordId);
+
+		Setup setup;
+
+		setup.addRoles(guid[] { Roles.User }, recordId);
+		setup.addEntries(setup.publicEntries, recordId);
+	}
+
+	// Перед удалением пользователя удаляем его роли и пункты меню
+	virtual protected void beforeDestroy(guid recordId) {
+		super.beforeDestroy(recordId);
+		
+		ProjectAccess access;
+		UserRoles userRoles;
+		UserEntries userEntries;
+		
+		//Нельзя удалить пользователя, пока он числится в проекте
+		if (access.hasRecord(
+			(sql_guid) access.userId == (sql_guid) recordId
+		))
+			throw "Перед удалением пользователя необходимо удалить его из всех проектов";
+	
+		// Системные роли пользователя удаляются
+		userRoles.destroy(
+			(sql_guid) userRoles.user == (sql_guid) recordId
+		);
+	
+		// Пункты меню пользователя удаляются
+		userEntries.destroy(
+			(sql_guid) userEntries.user == (sql_guid) recordId
+		);
+	}
 
 }

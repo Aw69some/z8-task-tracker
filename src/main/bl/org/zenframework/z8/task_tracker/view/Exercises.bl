@@ -9,9 +9,12 @@ import org.zenframework.z8.task_tracker.model.ProjectAccess;
 [request true]
 [displayName "Все задачи"]
 public class Exercises extends Exercise {
-	names = { name };
 	
 	[displayName "Наименование"] name;
+	
+	[displayName "Код проекта"] project.code;
+	project.code.readOnly = true;
+	project.code.editable = false; 
 
 	[displayName "Описание"] description;
 	description.colSpan = 4;
@@ -22,39 +25,45 @@ public class Exercises extends Exercise {
 	[displayName "Срок исполнения"] dueDate;
 	
 	[displayName "Дата фактического исполнения"] completedAt;
+	completedAt.readOnly = true;
 	completedAt.editable = false; 
 	
 	[displayName "Проект"] project.name;
 	
 	[displayName "Создатель"] creator.name;
+	creator.name.readOnly = true;
 	creator.name.editable = false;
 	
 	[displayName "Исполнитель"] executor.name;
 	
-
+	[displayName "ID"] id;
+	id.readOnly = true;
+	id.editable = false;
+	
 	[displayName "Задача"]
 	public Fieldset fieldset;
 	fieldset.controls = {	
 		project.name,
+		project.code,
 		name,
+		id,
 		complexity,
-		dueDate,
-		completedAt,
 		creator.name,
 		executor.name,
-		status.name,
+		description
 	};
-	fieldset.colCount = 4;
 	fieldset.colSpan = 4;
 	fieldset.flex = 1;
 	
-/*	virtual protected void beforeRead() {
-	super.beforeRead();
+	[displayName "Статус"]
+	public Fieldset StatusFieldset;
+	StatusFieldset.controls = {
+		dueDate,
+		completedAt,	
+		status.name
+	};
+	StatusFieldset.colSpan = 4;
 
-	addWhere(projectAccess.projectId == projectId && projectAccess.userId == user().id);
-	}*/
-	
-	
 	public ProjectAccess projectAccess;
 
 	public Join projectAccessJoin = class {
@@ -65,55 +74,38 @@ public class Exercises extends Exercise {
 
 	projectAccessJoin = projectAccess;
 	
-
+	//Показать все задачи доступные пользователю
 	virtual protected void beforeRead() {
 		super.beforeRead();
 
 		addWhere(projectAccess.userId == user().id);
 	}
 
-
 	public ExHistory exhistory;
-	/* Свойство поля "editable" определяет возможность редактирования поля в таблицах и списках */
-	exhistory.status.name.editable = true;
-	exhistory.user.name.editable = true;
-	exhistory.description.editable = true;
-	//exhistory.attribute.editable = true;
 	
-	//status.name.dependencies = { exhistoryList };
-	//user.name.dependencies = { exhistoryList };
-	
+	exhistory.readOnly = true;
 	recordId.dependencies = { exhistoryList };
-	//name.dependencies = { exhistoryList };
 	
-	/* Атрибут [displayName] определяет имя, с которым список historyList отображается в UI */
 	[displayName "История"]
-	/* Список записей истории изменения текущего документа */
 	private Listbox exhistoryList;
-	/* query - источник данных для списка, в данном случае это таблица History */
 	exhistoryList.query = exhistory;
-	/* link - ссылочное поле в источнике данных, по значению которого нужно отфильтровать записи источника */
 	exhistoryList.link = exhistory.exerciseId;
-	/* columns - массив полей, отображаемых в списке, каждое поле должно указываться ОБЯЗАТЕЛЬНО относительно источника, т.е. history */
 	exhistoryList.columns = { exhistory.createdAt, exhistory.changedField, exhistory.value, exhistory.user.name };
-	/* colSpan - количество условных столбцов формы, которое компонент занимает по ширине */
 	exhistoryList.colSpan = 4;
-	/* flex - если больше 0, компонент растягивается по вертикали и заполняет форму */
 	exhistoryList.flex = 1;
 	
-
-	
-	controls = {fieldset, description, exhistoryList};
-
+	names = { name };
+	controls = { fieldset, StatusFieldset, exhistoryList };
 	columns = {
 		project.name,
 		name,
+		id,
 		complexity,
 		dueDate,
 		completedAt,
 		creatorId,
 		executorId,
-		status.name,
-		description
+		status.name
 	};
+	
 }
